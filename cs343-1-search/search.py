@@ -76,17 +76,20 @@ def tinyMazeSearch(problem):
 def dfsHelper(problem, visited, currPath, currState):
 
     if(problem.isGoalState(currState)):
-        return currState
+        print(currPath)
+        return currPath[:]
+    path = []
     for x in problem.getSuccessors(currState):
         if(x[0] in visited):
             continue
         currPath.append(x[1])
         visited.add(x[0])
-        dfsHelper(problem, visited, currPath, x[0])
-        # if(isGoal):
-        #     return currPath
+        result = dfsHelper(problem, visited, currPath, x[0])
+        if (result != []):
+            path = result
         currPath.pop()
         visited.remove(x[0])
+    return path
 
 def depthFirstSearch(problem):
     """
@@ -105,25 +108,64 @@ def depthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
 
     currState = problem.getStartState()
-    from game import Directions
-    s = Directions.SOUTH
-    w = Directions.WEST
-    e = Directions.EAST
-    n = Directions.NORTH
-    
     visited = set()
     visited.add(currState)
     currPath = []
-    #dfsHelper(problem, visited, currPath, currState)
-    print(finalPath)
+   
     result = dfsHelper(problem, visited, currPath, currState)
+
+    return result
+
+def bfsHelper(startCoordinate, finalCoordinate, parentDictionary, directionDictionary):
+    path = util.Stack()
+    while True:
+        path.push(directionDictionary[finalCoordinate])
+        finalCoordinate = parentDictionary[finalCoordinate]
+        print(finalCoordinate)
+        if(finalCoordinate == startCoordinate):
+            break
+    result = []
+    while(not path.isEmpty()):
+        result.append(path.pop())
     print(result)
     return result
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    currState = problem.getStartState()
+    startCoordinate = currState
+    frontier = util.Queue()
+    frontier.push(currState)
+    visited = set()
+    visited.add(currState)
+    finalCoordinate = (0,0)
+    currPath = []
+    parentDictionary = {}
+    directionDictionary = {}
+    while(not frontier.isEmpty()):
+        #print("here")
+        currState = frontier.pop()
+        
+        for x in problem.getSuccessors(currState):
+
+            #print(x)
+            #check later if in frontier
+            if(x[0] not in visited):
+                parentDictionary[x[0]] = currState
+                directionDictionary[x[0]] = x[1]
+                visited.add(x[0])
+                if(problem.isGoalState(x[0])):
+                    finalCoordinate = x[0]
+                    print("found it")
+                    break
+                frontier.push(x[0])
+    print(parentDictionary)
+    print(directionDictionary)
+    print(finalCoordinate)
+    
+                
+    return bfsHelper(startCoordinate, finalCoordinate, parentDictionary, directionDictionary)
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
