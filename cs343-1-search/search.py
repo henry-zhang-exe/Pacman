@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+finalPath = []
 
 class SearchProblem:
     """
@@ -72,6 +73,21 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+def dfsHelper(problem, visited, currPath, currState):
+
+    if(problem.isGoalState(currState)):
+        return currState
+    for x in problem.getSuccessors(currState):
+        if(x[0] in visited):
+            continue
+        currPath.append(x[1])
+        visited.add(x[0])
+        dfsHelper(problem, visited, currPath, x[0])
+        # if(isGoal):
+        #     return currPath
+        currPath.pop()
+        visited.remove(x[0])
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -87,7 +103,22 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    currState = problem.getStartState()
+    from game import Directions
+    s = Directions.SOUTH
+    w = Directions.WEST
+    e = Directions.EAST
+    n = Directions.NORTH
+    
+    visited = set()
+    visited.add(currState)
+    currPath = []
+    #dfsHelper(problem, visited, currPath, currState)
+    print(finalPath)
+    result = dfsHelper(problem, visited, currPath, currState)
+    print(result)
+    return result
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
