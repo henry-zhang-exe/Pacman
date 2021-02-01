@@ -208,8 +208,32 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    currState = problem.getStartState()
+    currCost = 0
+    currPath = []
+    frontier = util.PriorityQueue()
+    frontier.push((currState, currCost, currPath), 0)
+    visited = set()
 
+    while not frontier.isEmpty():
+        node = frontier.pop()
+        currState = node[0]
+        currCost = node[1]
+        currPath = node[2]
+        if(problem.isGoalState(currState)):
+            return currPath
+        visited.add(currState)
+        for x in problem.getSuccessors(currState):
+            distance = searchAgents.manhattanHeuristic(x[0], problem, {})
+            successorState = x[0]
+            successorPath = x[1]
+            successorCost = x[2]
+            
+            if(successorState not in visited):
+                print(currCost)
+                print(successorCost)
+                frontier.push((successorState, currCost + successorCost + distance, currPath + [successorPath]), currCost + successorCost + distance)
+                
 
 # Abbreviations
 bfs = breadthFirstSearch
