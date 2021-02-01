@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+import searchAgents
 finalPath = []
 
 class SearchProblem:
@@ -144,13 +145,10 @@ def breadthFirstSearch(problem):
     parentDictionary = {}
     directionDictionary = {}
     while(not frontier.isEmpty()):
-        #print("here")
+
         currState = frontier.pop()
         
         for x in problem.getSuccessors(currState):
-
-            #print(x)
-            #check later if in frontier
             if(x[0] not in visited):
 
                 parentDictionary[x[0]] = currState
@@ -158,12 +156,8 @@ def breadthFirstSearch(problem):
                 visited.add(x[0])
                 if(problem.isGoalState(x[0])):
                     finalCoordinate = x[0]
-                    print("found it")
                     break
                 frontier.push(x[0])
-    print(parentDictionary)
-    print(directionDictionary)
-    print(finalCoordinate)
     
                 
     return bfsHelper(startCoordinate, finalCoordinate, parentDictionary, directionDictionary)
@@ -232,7 +226,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             if(successorState not in visited):
                 print(currCost)
                 print(successorCost)
-                frontier.push((successorState, currCost + successorCost + distance, currPath + [successorPath]), currCost + successorCost + distance)
+                print(successorState)
+                frontier.push((successorState, currCost + successorCost, currPath + [successorPath]), currCost + successorCost + distance)
                 
 
 # Abbreviations
