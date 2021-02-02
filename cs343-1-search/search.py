@@ -77,7 +77,6 @@ def tinyMazeSearch(problem):
 def dfsHelper(problem, visited, currPath, currState):
 
     if(problem.isGoalState(currState)):
-        print(currPath)
         return currPath[:]
     path = []
     for x in problem.getSuccessors(currState):
@@ -122,13 +121,11 @@ def bfsHelper(startCoordinate, finalCoordinate, parentDictionary, directionDicti
     while True:
         path.push(directionDictionary[finalCoordinate])
         finalCoordinate = parentDictionary[finalCoordinate]
-        print(finalCoordinate)
         if(finalCoordinate == startCoordinate):
             break
     result = []
     while(not path.isEmpty()):
         result.append(path.pop())
-    print(result)
     return result
 
 def breadthFirstSearch(problem):
@@ -181,14 +178,12 @@ def uniformCostSearch(problem):
             return currPath
         visited.add(currState)
         for x in problem.getSuccessors(currState):
-            print(x)
             successorState = x[0]
             successorPath = x[1]
             successorCost = x[2]
             
             if(successorState not in visited):
-                print(currCost)
-                print(successorCost)
+
                 frontier.push((successorState, currCost + successorCost, currPath + [successorPath]), currCost + successorCost)
                 
     return []
@@ -224,9 +219,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             successorCost = x[2]
             
             if(successorState not in visited):
-                print(currCost)
-                print(successorCost)
-                print(successorState)
+
                 frontier.push((successorState, currCost + successorCost, currPath + [successorPath]), currCost + successorCost + distance)
                 
 
