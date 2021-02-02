@@ -133,15 +133,19 @@ def breadthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     currState = problem.getStartState()
     startCoordinate = currState
+
     frontier = util.Queue()
     frontier.push(currState)
+
     visited = set()
     visited.add(currState)
+
     finalCoordinate = (0,0)
-    currPath = []
     parentDictionary = {}
     directionDictionary = {}
-    while(not frontier.isEmpty()):
+    isDone = False
+
+    while(not isDone and not frontier.isEmpty()):
 
         currState = frontier.pop()
         
@@ -153,9 +157,9 @@ def breadthFirstSearch(problem):
                 visited.add(x[0])
                 if(problem.isGoalState(x[0])):
                     finalCoordinate = x[0]
+                    isDone = True
                     break
                 frontier.push(x[0])
-    
                 
     return bfsHelper(startCoordinate, finalCoordinate, parentDictionary, directionDictionary)
 
@@ -213,14 +217,14 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             return currPath
         visited.add(currState)
         for x in problem.getSuccessors(currState):
-            distance = searchAgents.manhattanHeuristic(x[0], problem, {})
+            heuristicVal = heuristic(x[0], problem)
             successorState = x[0]
             successorPath = x[1]
             successorCost = x[2]
             
             if(successorState not in visited):
 
-                frontier.push((successorState, currCost + successorCost, currPath + [successorPath]), currCost + successorCost + distance)
+                frontier.push((successorState, currCost + successorCost, currPath + [successorPath]), currCost + successorCost + heuristicVal)
                 
 
 # Abbreviations
