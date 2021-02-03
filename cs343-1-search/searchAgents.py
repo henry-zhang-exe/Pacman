@@ -303,8 +303,6 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        print "in is goal state"
-        print (state[1])
         return len(state[1]) == 0
         
 
@@ -372,13 +370,31 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    coordinate = state[0]
-    sumDistance = util.manhattanDistance(coordinate, corners[0])
-    for x in corners[1:]:
-        if(util.manhattanDistance(coordinate, x) < sumDistance):
-            sumDistance += util.manhattanDistance(coordinate, x)
+    # coordinate = state[0]
+    # sumDistance = util.manhattanDistance(coordinate, corners[0])
+    # for x in corners[1:]:
+    #     if(util.manhattanDistance(coordinate, x) < sumDistance):
+    #         sumDistance += util.manhattanDistance(coordinate, x)
             
-    return sumDistance/4 # Default to trivial solution
+    # return sumDistance
+
+
+    coor = state[0]
+    corners = list(state[1])
+    if(len(corners) is 0):
+        return 0
+    cornerHeuristic = 0
+    while(len(corners) > 0):
+        minDistance = 10000
+        for x in corners:
+            if(util.manhattanDistance(coor, x) < minDistance):
+                nextCorner = x
+                minDistance = util.manhattanDistance(coor, x)
+        coor = nextCorner
+        cornerHeuristic += minDistance
+        corners.remove(nextCorner)
+    
+    return cornerHeuristic 
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
