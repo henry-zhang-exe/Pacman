@@ -370,31 +370,50 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    # coordinate = state[0]
-    # sumDistance = util.manhattanDistance(coordinate, corners[0])
-    # for x in corners[1:]:
-    #     if(util.manhattanDistance(coordinate, x) < sumDistance):
-    #         sumDistance += util.manhattanDistance(coordinate, x)
-            
-    # return sumDistance
-
-
-    coor = state[0]
-    corners = list(state[1])
-    if(len(corners) is 0):
+    unvisitedCorners = list(state[1])
+    if(len(unvisitedCorners) == 0):
         return 0
-    cornerHeuristic = 0
-    while(len(corners) > 0):
-        minDistance = 10000
-        for x in corners:
-            if(util.manhattanDistance(coor, x) < minDistance):
-                nextCorner = x
-                minDistance = util.manhattanDistance(coor, x)
-        coor = nextCorner
-        cornerHeuristic += minDistance
-        corners.remove(nextCorner)
+    maximum = util.manhattanDistance(state[0], unvisitedCorners[0])
+    for corner in unvisitedCorners[1:]:
+        distance = util.manhattanDistance(state[0], corner)
+        if distance < maximum:
+            maximum = distance
+    return maximum
+    # pacmanPosition = state[0]
+    # unvisitedCorners = list(state[1])
+    # if(len(unvisitedCorners) is 0):
+    #     return 0
+    # queue = util.PriorityQueue()
+    # for corner in unvisitedCorners:
+    #     distance =  util.manhattanDistance(pacmanPosition, corner)
+    #     queue.push((corner), distance)
+    # total = 0
+    # while not queue.isEmpty():
+    #     total += util.manhattanDistance(pacmanPosition, corner)
+    #     pacmanPosition = corner
+    #     queue.pop()         
+    # print total        
+    # return total
+
     
-    return cornerHeuristic 
+
+
+    # coor = state[0]
+    # corners = list(state[1])
+    # if(len(corners) is 0):
+    #     return 0
+    # cornerHeuristic = 0
+    # while(len(corners) > 0):
+    #     minDistance = 10000
+    #     for x in corners:
+    #         if(util.manhattanDistance(coor, x) < minDistance):
+    #             nextCorner = x
+    #             minDistance = util.manhattanDistance(coor, x)
+    #     coor = nextCorner
+    #     cornerHeuristic += minDistance
+    #     corners.remove(nextCorner)
+    
+    # return cornerHeuristic 
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
