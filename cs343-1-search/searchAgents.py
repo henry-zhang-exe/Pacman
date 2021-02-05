@@ -507,7 +507,15 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    foodHeuristic = 0
+    if(len(foodGrid.asList()) == 0):
+        return 0
+    maximum = foodGrid.asList()[0]
+    for x in foodGrid.asList()[1:]:
+        distance = util.manhattanDistance(position, x)
+        if maximum < distance:
+            maximum = distance
+    return maximum
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"

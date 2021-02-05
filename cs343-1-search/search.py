@@ -87,6 +87,7 @@ def dfsHelper(problem, visited, currPath, currState):
         result = dfsHelper(problem, visited, currPath, x[0])
         if (result != []):
             path = result
+            break
         currPath.pop()
         visited.remove(x[0])
     return path
@@ -148,17 +149,14 @@ def breadthFirstSearch(problem):
     while(not isDone and not frontier.isEmpty()):
 
         currState = frontier.pop()
-        
+        if(problem.isGoalState(currState)):
+            finalCoordinate = currState
+            break
         for x in problem.getSuccessors(currState):
             if(x[0] not in visited):
-
                 parentDictionary[x[0]] = currState
                 directionDictionary[x[0]] = x[1]
                 visited.add(x[0])
-                if(problem.isGoalState(x[0])):
-                    finalCoordinate = x[0]
-                    isDone = True
-                    break
                 frontier.push(x[0])
                 
     return bfsHelper(startCoordinate, finalCoordinate, parentDictionary, directionDictionary)
@@ -166,30 +164,31 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    currState = problem.getStartState()
-    currCost = 0
-    currPath = []
+
     frontier = util.PriorityQueue()
-    frontier.push((currState, currCost, currPath), 0)
     visited = set()
+    
+    
+    frontier.push([problem.getStartState(), []], 0)
 
-    while not frontier.isEmpty():
-        node = frontier.pop()
-        currState = node[0]
-        currCost = node[1]
-        currPath = node[2]
-        if(problem.isGoalState(currState)):
+    while(not frontier.isEmpty()):
+        coor, currPath = frontier.pop()
+        
+        if problem.isGoalState(coor):
             return currPath
-        visited.add(currState)
-        for x in problem.getSuccessors(currState):
-            successorState = x[0]
-            successorPath = x[1]
-            successorCost = x[2]
-            
-            if(successorState not in visited):
-
-                frontier.push((successorState, currCost + successorCost, currPath + [successorPath]), currCost + successorCost)
-                
+        
+        successors = problem.getSuccessors(coor)
+        costOfPath = problem.getCostOfActions(currPath)
+        for x in successors:
+            cost = 0
+            skip = False
+            for y in frontier.heap:
+                if x[0] == y[2][0]:
+                    cost = y[0] - costOfPath
+                    skip = True
+            if x[0] not in visited and (x[2] < cost or not skip):
+                frontier.push([x[0], currPath + [x[1]]], costOfPath + x[2])  
+        visited.add(coor)
     return []
 def nullHeuristic(state, problem=None):
     """
@@ -243,12 +242,10 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         successors = problem.getSuccessors(coor)
         costOfPath = problem.getCostOfActions(currPath)
         for x in successors:
-            #print(x)
             cost = 0
             skip = False
             for y in frontier.heap:
                 if x[0] == y[2][0]:
-                    #print(x[0])
                     cost = y[0] - costOfPath - heuristic(coor, problem)
                     skip = True
             if x[0] not in visited and (x[2] < cost or not skip):
