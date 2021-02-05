@@ -198,34 +198,63 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    currState = problem.getStartState()
-    currCost = 0
-    currPath = []
-    frontier = util.PriorityQueue()
-    frontier.push((currState, currCost, currPath), 0)
-    visited = set()
+# def aStarSearch(problem, heuristic=nullHeuristic):
+#     """Search the node that has the lowest combined cost and heuristic first."""
+#     "*** YOUR CODE HERE ***"
+#     currState = problem.getStartState()
+#     currCost = 0
+#     currPath = []
+#     frontier = util.PriorityQueue()
+#     frontier.push((currState, currCost, currPath), 0)
+#     visited = set()
 
-    while not frontier.isEmpty():
-        node = frontier.pop()
-        currState = node[0]
-        currCost = node[1]
-        currPath = node[2]
-        if(problem.isGoalState(currState)):
-            return currPath
-        visited.add(currState)
-        for x in problem.getSuccessors(currState):
-            heuristicVal = heuristic(x[0], problem)
-            successorState = x[0]
-            successorPath = x[1]
-            successorCost = x[2]
+#     while not frontier.isEmpty():
+#         node = frontier.pop()
+#         currState = node[0]
+#         currCost = node[1]
+#         currPath = node[2]
+#         if(problem.isGoalState(currState)):
+#             return currPath
+#         visited.add(currState)
+#         for x in problem.getSuccessors(currState):
+#             heuristicVal = heuristic(x[0], problem)
+#             successorState = x[0]
+#             successorPath = x[1]
+#             successorCost = x[2]
             
-            if(successorState not in visited):
+#             if(successorState not in visited):
 
-                frontier.push((successorState, currCost + successorCost, currPath + [successorPath]), currCost + successorCost + heuristicVal)
+#                 frontier.push((successorState, currCost + successorCost, currPath + [successorPath]), currCost + successorCost + heuristicVal)
                 
+def aStarSearch(problem, heuristic=nullHeuristic):
+
+    frontier = util.PriorityQueue()
+    visited = set()
+    
+    
+    frontier.push([problem.getStartState(), []], 0)
+
+    while(not frontier.isEmpty()):
+        coor, currPath = frontier.pop()
+        
+        if problem.isGoalState(coor):
+            return currPath
+        
+        successors = problem.getSuccessors(coor)
+        costOfPath = problem.getCostOfActions(currPath)
+        for x in successors:
+            #print(x)
+            cost = 0
+            skip = False
+            for y in frontier.heap:
+                if x[0] == y[2][0]:
+                    #print(x[0])
+                    cost = y[0] - costOfPath - heuristic(coor, problem)
+                    skip = True
+            if x[0] not in visited and (x[2] < cost or not skip):
+                frontier.push([x[0], currPath + [x[1]]], costOfPath + x[2] + heuristic(x[0], problem))  
+        visited.add(coor)
+    return []
 
 # Abbreviations
 bfs = breadthFirstSearch

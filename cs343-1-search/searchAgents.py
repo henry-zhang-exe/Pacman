@@ -370,15 +370,15 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    unvisitedCorners = list(state[1])
-    if(len(unvisitedCorners) == 0):
-        return 0
-    maximum = util.manhattanDistance(state[0], unvisitedCorners[0])
-    for corner in unvisitedCorners[1:]:
-        distance = util.manhattanDistance(state[0], corner)
-        if distance < maximum:
-            maximum = distance
-    return maximum
+    # unvisitedCorners = list(state[1])
+    # if(len(unvisitedCorners) == 0):
+    #     return 0
+    # maximum = util.manhattanDistance(state[0], unvisitedCorners[0])
+    # for corner in unvisitedCorners[1:]:
+    #     distance = util.manhattanDistance(state[0], corner)
+    #     if distance < maximum:
+    #         maximum = distance
+    # return maximum
     # pacmanPosition = state[0]
     # unvisitedCorners = list(state[1])
     # if(len(unvisitedCorners) is 0):
@@ -398,22 +398,22 @@ def cornersHeuristic(state, problem):
     
 
 
-    # coor = state[0]
-    # corners = list(state[1])
-    # if(len(corners) is 0):
-    #     return 0
-    # cornerHeuristic = 0
-    # while(len(corners) > 0):
-    #     minDistance = 10000
-    #     for x in corners:
-    #         if(util.manhattanDistance(coor, x) < minDistance):
-    #             nextCorner = x
-    #             minDistance = util.manhattanDistance(coor, x)
-    #     coor = nextCorner
-    #     cornerHeuristic += minDistance
-    #     corners.remove(nextCorner)
+    coor = state[0]
+    corners = list(state[1])
+    if(len(corners) is 0):
+        return 0
+    cornerHeuristic = 0
+    while(len(corners) > 0):
+        minDistance = 10000
+        for x in corners:
+            if(util.manhattanDistance(coor, x) < minDistance):
+                nextCorner = x
+                minDistance = util.manhattanDistance(coor, x)
+        coor = nextCorner
+        cornerHeuristic += minDistance
+        corners.remove(nextCorner)
     
-    # return cornerHeuristic 
+    return cornerHeuristic 
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
