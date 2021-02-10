@@ -321,15 +321,13 @@ class CornersProblem(search.SearchProblem):
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
+
             x,y = state[0]
             corners = state[1]
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
+                #need to update the state of successor if it is a corner
                 if(nextx, nexty) in self.corners and (nextx, nexty) in corners:
                     cornersCopy = list(corners)
                     cornersCopy.remove((nextx, nexty))
@@ -370,32 +368,6 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    # unvisitedCorners = list(state[1])
-    # if(len(unvisitedCorners) == 0):
-    #     return 0
-    # maximum = util.manhattanDistance(state[0], unvisitedCorners[0])
-    # for corner in unvisitedCorners[1:]:
-    #     distance = util.manhattanDistance(state[0], corner)
-    #     if distance < maximum:
-    #         maximum = distance
-    # return maximum
-    # pacmanPosition = state[0]
-    # unvisitedCorners = list(state[1])
-    # if(len(unvisitedCorners) is 0):
-    #     return 0
-    # queue = util.PriorityQueue()
-    # for corner in unvisitedCorners:
-    #     distance =  util.manhattanDistance(pacmanPosition, corner)
-    #     queue.push((corner), distance)
-    # total = 0
-    # while not queue.isEmpty():
-    #     total += util.manhattanDistance(pacmanPosition, corner)
-    #     pacmanPosition = corner
-    #     queue.pop()         
-    # print total        
-    # return total
-
-    
 
 
     coor = state[0]
@@ -403,6 +375,8 @@ def cornersHeuristic(state, problem):
     if(len(corners) is 0):
         return 0
     cornerHeuristic = 0
+    
+    #Loops through all corners, finds the shortest distance corner, then finds the next closest corner, and so on
     while(len(corners) > 0):
         minDistance = 10000
         for x in corners:
@@ -507,15 +481,15 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    foodHeuristic = 0
+
     if(len(foodGrid.asList()) == 0):
         return 0
-    maximum = 0
+    furthestFoodDistance = 0
     for x in foodGrid.asList():
-        distance = util.manhattanDistance(position, x)
-        if maximum < distance:
-            maximum = distance
-    return maximum
+        distance = mazeDistance(position, x, problem.startingGameState)
+        if distance > furthestFoodDistance:
+            furthestFoodDistance = distance
+    return furthestFoodDistance
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"

@@ -75,19 +75,25 @@ def tinyMazeSearch(problem):
     return  [s, s, w, s, w, w, s, w]
 
 def dfsHelper(problem, visited, currPath, currState):
-
+    # immidiately return path if we are in the goal state
     if(problem.isGoalState(currState)):
         return currPath[:]
     path = []
     for x in problem.getSuccessors(currState):
         if(x[0] in visited):
             continue
+        # append the node to current path before exploring
+        # further in the graph
         currPath.append(x[1])
         visited.add(x[0])
+
         result = dfsHelper(problem, visited, currPath, x[0])
         if (result != []):
             path = result
             break
+        # remove the current node from the path
+        # so that other children of the current
+        # parent may be considered
         currPath.pop()
         visited.remove(x[0])
     return path
@@ -142,16 +148,25 @@ def breadthFirstSearch(problem):
     visited.add(currState)
 
     finalCoordinate = (0,0)
+    # Dictionary of parent-child coordinate pairs
+    # Dictionary of coordinates and the preceding
+    # action that was taken to reach it
     parentDictionary = {}
     directionDictionary = {}
     isDone = False
 
+    # Keep exploring while a path has not been found and frontier is not empty
     while(not isDone and not frontier.isEmpty()):
 
         currState = frontier.pop()
+        ## when we find the goal state, set a flag 
+        # so the helper function may be called
         if(problem.isGoalState(currState)):
             finalCoordinate = currState
             break
+        # for each successor we haven't yet visited,
+        # add the coordinates to the parentDictionary
+        # so a path can be built.
         for x in problem.getSuccessors(currState):
             if(x[0] not in visited):
                 parentDictionary[x[0]] = currState
@@ -165,6 +180,8 @@ def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
 
+    # holds current state, current path, and 
+    # prioritizes based on cost
     frontier = util.PriorityQueue()
     visited = set()
     
@@ -173,7 +190,8 @@ def uniformCostSearch(problem):
 
     while(not frontier.isEmpty()):
         coor, currPath = frontier.pop()
-        
+
+        # return current path back up recursive tree    
         if problem.isGoalState(coor):
             return currPath
         
@@ -182,7 +200,12 @@ def uniformCostSearch(problem):
         for x in successors:
             cost = 0
             skip = False
+
+            # for each successor, compare cost of path to existing
+            # cost and see if the cost to explore that way is better
             for y in frontier.heap:
+                # do not add the value to the frontier if the
+                # state in the priority queue is the same.
                 if x[0] == y[2][0]:
                     cost = y[0] - costOfPath
                     skip = True
@@ -197,34 +220,7 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-# def aStarSearch(problem, heuristic=nullHeuristic):
-#     """Search the node that has the lowest combined cost and heuristic first."""
-#     "*** YOUR CODE HERE ***"
-#     currState = problem.getStartState()
-#     currCost = 0
-#     currPath = []
-#     frontier = util.PriorityQueue()
-#     frontier.push((currState, currCost, currPath), 0)
-#     visited = set()
-
-#     while not frontier.isEmpty():
-#         node = frontier.pop()
-#         currState = node[0]
-#         currCost = node[1]
-#         currPath = node[2]
-#         if(problem.isGoalState(currState)):
-#             return currPath
-#         visited.add(currState)
-#         for x in problem.getSuccessors(currState):
-#             heuristicVal = heuristic(x[0], problem)
-#             successorState = x[0]
-#             successorPath = x[1]
-#             successorCost = x[2]
-            
-#             if(successorState not in visited):
-
-#                 frontier.push((successorState, currCost + successorCost, currPath + [successorPath]), currCost + successorCost + heuristicVal)
-                
+              
 def aStarSearch(problem, heuristic=nullHeuristic):
 
     frontier = util.PriorityQueue()
@@ -241,10 +237,15 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         
         successors = problem.getSuccessors(coor)
         costOfPath = problem.getCostOfActions(currPath)
+        # for each successor, compare cost of path to existing
+        # cost and see if the cost to explore that way is better
         for x in successors:
             cost = 0
             skip = False
+            
             for y in frontier.heap:
+                # do not add the value to the frontier if the
+                # state in the priority queue is the same.                
                 if x[0] == y[2][0]:
                     cost = y[0] - costOfPath - heuristic(coor, problem)
                     skip = True
